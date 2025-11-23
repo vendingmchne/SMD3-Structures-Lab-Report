@@ -22,12 +22,17 @@ R_inner = 0.2905/2
 R_med = R_inner + thickness / 2
 R_outer = R_inner + thickness
 
+##Moment of Inertia
+Ix = width*thickness**3/12 
+Iy = thickness*width**3/12
+Iz = Ix + Iy
+
 ##Theoretical Deflection 
-P = df["Weight"]
-I = width*thickness**3/12 
+P = df["Weight (N)"]
+
 E = 210 * 10**9
-slopeh_theory = 2 * R_med**3 / (E * I)
-slopev_theory = np.pi * R_med**3 / (E * I)
+slopeh_theory = 2 * R_med**3 / (E * Ix)
+slopev_theory = np.pi * R_med**3 / (E * Ix)
 
 ##Theoretical arrays
 P_theory = np.linspace(0, 12, 100)
@@ -35,8 +40,8 @@ dh_theory = P_theory * slopeh_theory
 dv_theory = P_theory * slopev_theory
 
 ##Experimental Arrays
-dh_exp = df["Mean H_D"]
-dv_exp = df["Mean V_D"]
+dh_exp = df["Mean H_D (m)"]
+dv_exp = df["Mean V_D (m)"]
 
 ###ERROR CALCULATIONS
 
@@ -122,9 +127,9 @@ axs[1].plot(P_theory, dv_theory - err_dv_theory, lw = 0.5, c = "black", label = 
 
 #Experimental Plots with error bars
 axs[0].scatter(P, dh_exp, c = "green")
-axs[0].errorbar(P, dh_exp, yerr = df["Error in H_D"], fmt = "o")
+axs[0].errorbar(P, dh_exp, yerr = df["Error in H_D (m)"], fmt = "o")
 axs[1].scatter(P, dv_exp, c = "green")
-axs[1].errorbar(P, dv_exp, yerr = df["Error in V_D"], fmt = "o")
+axs[1].errorbar(P, dv_exp, yerr = df["Error in V_D (m)"], fmt = "o")
 
 #Experimental Regression Plots
 axs[0].plot(P, (intcpth + regslopeh * P), label = "Regression slope", linestyle = "dashed")
@@ -141,5 +146,5 @@ plt.tight_layout()
 plt.show()
 
 print("R^2 for horz: ", rsqh, "R^2 for vert: ", rsqv)
-print(I)
+print(Ix)
 
